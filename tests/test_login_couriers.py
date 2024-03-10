@@ -1,17 +1,14 @@
 import requests
 import pytest
 import allure
-
+from data import Url, Authentication, BodyResponse
 class TestLoginCouriers:
     @allure.title('Тест курьер может авторизоваться')
     @allure.description('Передаем корректные данные, проверяем код 200 и что тело'
                         'ответа содержит id курьера')
     def test_courier_authentication_success(self):
-        data = {
-            "login": "SashaKurochkin",
-            "password": "1234",
-            }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', json=data)
+        data = Authentication.courier_authentication
+        response = requests.post(f'{Url.HOST}/courier/login', json=data)
 
         assert response.status_code == 200 and "id" in response.json()
 
@@ -27,10 +24,9 @@ class TestLoginCouriers:
             "login": login,
             "password": password
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login',json=data)
+        response = requests.post(f'{Url.HOST}/courier/login',json=data)
 
-        assert response.status_code == 400 and response.json() == {"code": 400,
-                                                                   "message": "Недостаточно данных для входа"}
+        assert response.status_code == 400 and response.json() == BodyResponse.MESSAGE_400_LOGIN
 
     @allure.title('Тест если авторизоваться под несуществующим пользователем, запрос возвращает ошибку')
     @allure.description('Передаем несуществующий логин, пароль проверяем код 404 и что тело'
@@ -45,10 +41,9 @@ class TestLoginCouriers:
             "login": login,
             "password": password
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login',json=data )
+        response = requests.post(f'{Url.HOST}/courier/login',json=data )
 
-        assert response.status_code == 404 and response.json() == {"code": 404,
-                                                                   "message": "Учетная запись не найдена"}
+        assert response.status_code == 404 and response.json() == BodyResponse.MESSAGE_404
 
 
 

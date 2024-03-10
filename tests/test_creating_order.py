@@ -1,6 +1,8 @@
 import requests
 import pytest
 import allure
+from data import Url
+
 
 class TestCreatingOrder:
     @allure.title('Тест указаания цвета в запросе')
@@ -24,6 +26,6 @@ class TestCreatingOrder:
             "comment": "Saske, come back to Konoha",
             "color": [color]
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/orders', json=data)
+        response = requests.post(f'{Url.HOST}/orders', json=data)
 
         assert response.status_code == 201 and "track" in response.json()
